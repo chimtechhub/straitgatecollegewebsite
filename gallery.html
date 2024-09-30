@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SGC|Events-Gallery</title>
+  <!-- Include Vue.js -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+  <!-- Include Vuetify -->
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.5.10/dist/vuetify.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.5.10/dist/vuetify.js"></script>
+  <!-- Include Material Design Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/css/gallery.css">
+</head>
+
+<body>
+  <div id="app">
+    <v-app>
+      <!-- App Bar -->
+      <v-app-bar app color="#fff" dark :color="darkTheme ? 'black darken-6' : 'white'">
+        <v-toolbar-title>
+          <img src="/images/sgclogo.png" alt="Straitgate College Logo" height="50">
+        </v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-toolbar-items>
+          <ul class="nav-links">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="/blog.html">Blog</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </v-toolbar-items>
+        <v-spacer></v-spacer>
+        <v-btn icon @click="toggleTheme" style="margin-right: 20px; margin-left: 2rem; color: #b4030f;">
+          <v-icon>{{ darkTheme ? 'mdi-weather-night' : 'mdi-weather-sunny' }}</v-icon>
+        </v-btn>
+      </v-app-bar>
+
+      <!-- Gallery Area -->
+      <div class="main-container">
+        <div class="gallery">
+          <div v-for="(image, index) in paginatedImages" :key="index" @click="openLightbox(image)">
+            <img :src="image" :alt="'Event Image ' + (currentPage * imagesPerPage + index + 1)">
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+          <button @click="previousPage" :disabled="currentPage === 0">Previous</button>
+          <button v-for="page in totalPages" :key="page" @click="goToPage(page - 1)" :class="{ active: currentPage === page - 1 }">
+            {{ page }}
+          </button>
+          <button @click="nextPage" :disabled="currentPage === totalPages - 1">Next</button>
+        </div>
+      </div>
+
+      <!-- Lightbox for Image Viewing -->
+      <div v-if="lightboxOpen" class="lightbox" @click="closeLightbox">
+        <span class="lightbox-close" @click="closeLightbox">&times;</span>
+        <img :src="lightboxImage" alt="Expanded Image">
+      </div>
+
+     <!-- Footer -->
+     <div class="footer">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="/images/sgclogo.png" alt="Straitgate College Logo" height="40">
+        </div>
+        <div class="footer-links">
+          <p>&copy; 2024 Straitgate College. All Rights Reserved. Designed and Maintained by Chimtech Hub</p>
+          <a href="#contact">Contact Us</a>
+        </div>
+        <div class="footer-socials">
+          <a href="https://facebook.com" target="_blank" aria-label="Facebook">
+            <i class="mdi mdi-facebook"></i>
+          </a>
+          <a href="https://twitter.com" target="_blank" aria-label="Twitter">
+            <i class="mdi mdi-twitter"></i>
+          </a>
+          <a href="https://instagram.com" target="_blank" aria-label="Instagram">
+            <i class="mdi mdi-instagram"></i>
+          </a>
+          <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn">
+            <i class="mdi mdi-linkedin"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+
+    </v-app>
+  </div>
+
+  <!-- Vue.js and Vuetify Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.5.10/dist/vuetify.js"></script>
+
+  <script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      data() {
+        return {
+          images: [
+            'images/picture1.jpg',
+            'images/picture2.jpg',
+            'images/picture3.jpg',
+            'images/picture4.jpg',
+            'images/picture5.jpg',
+            'images/picture6.jpg',
+            'images/picture7.jpg',
+            'images/picture8.jpg',
+            'images/picture9.jpg',
+            'images/picture10.jpg',
+            'images/picture11.jpg',
+            'images/picture12.jpg',
+            'images/picture13.jpg',
+            'images/picture14.jpg',
+            'images/picture15.jpg',
+            'images/picture16.jpg',
+            'images/picture17.jpg',  
+          ],
+          currentPage: 0,
+          imagesPerPage: 8,
+          lightboxOpen: false,
+          lightboxImage: '',
+          darkTheme: false
+        };
+      },
+      computed: {
+        totalPages() {
+          return Math.ceil(this.images.length / this.imagesPerPage);
+        },
+        paginatedImages() {
+          const start = this.currentPage * this.imagesPerPage;
+          const end = start + this.imagesPerPage;
+          return this.images.slice(start, end);
+        }
+      },
+      methods: {
+        previousPage() {
+          if (this.currentPage > 0) {
+            this.currentPage--;
+          }
+        },
+        nextPage() {
+          if (this.currentPage < this.totalPages - 1) {
+            this.currentPage++;
+          }
+        },
+        goToPage(pageNumber) {
+          this.currentPage = pageNumber;
+        },
+        openLightbox(image) {
+          this.lightboxImage = image;
+          this.lightboxOpen = true;
+        },
+        closeLightbox() {
+          this.lightboxOpen = false;
+        },
+        toggleTheme() {
+          this.darkTheme = !this.darkTheme;
+          this.$vuetify.theme.dark = this.darkTheme;
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
